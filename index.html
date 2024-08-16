@@ -1223,45 +1223,75 @@
 
           <form
             id="submit-form"
-            class="email-form"
+            class="email-form needs-validation"
+            novalidate
             data-aos="fade-up"
             data-aos-delay="300"
+            onsubmit="return validateForm()"
           >
             <div class="row gy-4">
               <div class="col-md-6">
-                <input
-                  type="text"
-                  name="name"
-                  class="form-control"
-                  placeholder="Your Name"
-                />
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    class="form-control"
+                    placeholder="Your Name"
+                    required
+                  />
+                  <!-- <label for="name">Your Name</label> -->
+                  <div class="invalid-feedback">
+                    Please provide a valid name (only alphabets).
+                  </div>
+                </div>
               </div>
 
               <div class="col-md-6">
-                <input
-                  type="email"
-                  class="form-control"
-                  name="email"
-                  placeholder="Your Email"
-                />
+                <div class="form-floating">
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-control"
+                    placeholder="Your Email"
+                    required
+                  />
+                  <!-- <label for="email">Your Email</label> -->
+                  <div class="invalid-feedback">
+                    Please provide a valid email.
+                  </div>
+                </div>
               </div>
 
               <div class="col-md-12">
-                <input
-                  type="text"
-                  class="form-control"
-                  name="subject"
-                  placeholder="Subject"
-                />
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    class="form-control"
+                    placeholder="Subject"
+                    required
+                  />
+                  <!-- <label for="subject">Subject</label> -->
+                  <div class="invalid-feedback">Please provide a subject.</div>
+                </div>
               </div>
 
               <div class="col-md-12">
-                <textarea
-                  class="form-control"
-                  name="message"
-                  rows="6"
-                  placeholder="Message"
-                ></textarea>
+                <div class="form-floating">
+                  <textarea
+                    id="message"
+                    name="message"
+                    class="form-control"
+                    rows="6"
+                    placeholder="Message"
+                    required
+                  ></textarea>
+                  <!-- <label for="message">Message</label> -->
+                  <div class="invalid-feedback">Please provide a message.</div>
+                </div>
               </div>
 
               <div class="col-md-12 text-center">
@@ -1271,10 +1301,13 @@
                   Your message has been sent. Thank you!
                 </div>
 
-                <button type="submit">Send Message</button>
+                <button type="submit" class="btn btn-primary">
+                  Send Message
+                </button>
               </div>
             </div>
           </form>
+
           <!-- End Contact Form -->
         </div>
       </section>
@@ -1291,10 +1324,18 @@
           </p>
         </div> -->
         <div class="social-links d-flex justify-content-center">
-          <a href="https://www.linkedin.com/in/i-ajml/" target="_blank"><i class="bi bi-linkedin"></i></a>
-          <a href="https://x.com/i__ajmal" target="_blank"><i class="bi bi-twitter-x"></i></a>
-          <a href="https://www.instagram.com/aj__ml/" target="_blank"><i class="bi bi-instagram"></i></a>
-          <a href="https://www.facebook.com/ajml.mhmd" target="_blank"><i class="bi bi-facebook"></i></a>
+          <a href="https://www.linkedin.com/in/i-ajml/" target="_blank"
+            ><i class="bi bi-linkedin"></i
+          ></a>
+          <a href="https://x.com/i__ajmal" target="_blank"
+            ><i class="bi bi-twitter-x"></i
+          ></a>
+          <a href="https://www.instagram.com/aj__ml/" target="_blank"
+            ><i class="bi bi-instagram"></i
+          ></a>
+          <a href="https://www.facebook.com/ajml.mhmd" target="_blank"
+            ><i class="bi bi-facebook"></i
+          ></a>
         </div>
         <div class="credits">
           <!-- All the links in the footer should remain intact. -->
@@ -1324,42 +1365,55 @@
         const email = $("input[name='email']").val().trim();
         const subject = $("input[name='subject']").val().trim();
         const message = $("textarea[name='message']").val().trim();
-
+        
+        let isValid = true;
+    
+        // Reset previous validation feedback
+        $(".form-control").removeClass("is-invalid");
+        $(".invalid-feedback").hide();
+    
         if (name === "") {
-          alert("Please enter your name.");
-          return false;
+          $("input[name='name']").addClass("is-invalid");
+          $("input[name='name']").siblings(".invalid-feedback").text("Please enter your name.").show();
+          isValid = false;
+        } else if (!/^[A-Za-z\s]+$/.test(name)) {
+          $("input[name='name']").addClass("is-invalid");
+          $("input[name='name']").siblings(".invalid-feedback").text("Name must contain only alphabets.").show();
+          isValid = false;
         }
-
+    
         if (email === "") {
-          alert("Please enter your email.");
-          return false;
+          $("input[name='email']").addClass("is-invalid");
+          $("input[name='email']").siblings(".invalid-feedback").text("Please enter your email.").show();
+          isValid = false;
+        } else {
+          const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+          if (!emailPattern.test(email)) {
+            $("input[name='email']").addClass("is-invalid");
+            $("input[name='email']").siblings(".invalid-feedback").text("Please enter a valid email address.").show();
+            isValid = false;
+          }
         }
-
-        //email validation pattern taken from gpt
-        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        if (!emailPattern.test(email)) {
-          alert("Please enter a valid email address.");
-          return false;
-        }
-
+    
         if (subject === "") {
-          alert("Please enter a subject.");
-          return false;
+          $("input[name='subject']").addClass("is-invalid");
+          $("input[name='subject']").siblings(".invalid-feedback").text("Please enter a subject.").show();
+          isValid = false;
         }
-
+    
         if (message === "") {
-          alert("Please enter a message.");
-          return false;
+          $("textarea[name='message']").addClass("is-invalid");
+          $("textarea[name='message']").siblings(".invalid-feedback").text("Please enter a message.").show();
+          isValid = false;
         }
-
-        // If all validations pass
-        return true;
+    
+        return isValid;
       }
-
+    
       // Handle form submission
       $("#submit-form").submit((e) => {
         e.preventDefault();
-
+    
         // Perform validation before making AJAX request
         if (validateForm()) {
           $.ajax({
@@ -1367,17 +1421,19 @@
             data: $("#submit-form").serialize(),
             method: "post",
             success: function (response) {
-              alert("Form submitted successfully");
-              window.location.reload();
+              $(".sent-message").show();
+              $("#submit-form")[0].reset(); // Reset form after successful submission
+              $(".error-message").hide(); // Hide error message if any
             },
             error: function (err) {
-              alert("Something went wrong. Please try again.");
+              $(".error-message").text("Something went wrong. Please try again.").show();
               console.log(err); // Logging the error object instead of data
             },
           });
         }
       });
     </script>
+    
 
     <!-- Vendor JS Files -->
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
